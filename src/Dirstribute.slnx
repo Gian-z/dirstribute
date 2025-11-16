@@ -2,5 +2,6 @@
   <Folder Name="/src/">
     <Project Path="Dirstribute/Dirstribute.csproj" />
     <Project Path="DirstributeCli/DirstributeCli.csproj" />
+    <Project Path="DirstributeContracts/DirstributeContracts.csproj" />
   </Folder>
 </Solution>
