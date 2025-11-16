@@ -3,5 +3,6 @@
     <Project Path="Dirstribute/Dirstribute.csproj" />
     <Project Path="DirstributeCli/DirstributeCli.csproj" />
     <Project Path="DirstributeContracts/DirstributeContracts.csproj" />
+    <Project Path="DirstributeDomain/DirstributeDomain.csproj" />
   </Folder>
 </Solution>
