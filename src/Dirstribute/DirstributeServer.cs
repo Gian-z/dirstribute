@@ -4,7 +4,7 @@ namespace Dirstribute;
 
 public class DirstributeServer : IDirstributeServer
 {
-    public Task Map(string name, string source)
+    public Task Map(string name, string source, string target)
     {
         throw new NotImplementedException();
     }

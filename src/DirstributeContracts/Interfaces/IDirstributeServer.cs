@@ -2,7 +2,7 @@
 
 public interface IDirstributeServer
 {
-    Task Map(string name, string source);
+    Task Map(string name, string source, string target);
     Task Unmap(string name);
 
     Task Update(string name);

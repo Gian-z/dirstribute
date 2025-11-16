@@ -3,33 +3,32 @@ using StreamJsonRpc;
 
 namespace Dirstribute;
 
-public class Server
+public class NamedPipeServer : BackgroundService
 {
-    public async Task StartNamedPipeServerAsync(CancellationToken token)
+    private readonly ILogger _logger;
+    
+    public NamedPipeServer(ILogger<NamedPipeServer> logger)
     {
-        while (!token.IsCancellationRequested)
+        _logger = logger;
+    }
+    
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
         {
             await using var server = new NamedPipeServerStream(
-                "Dirstribute",
+                nameof(DirstributeServer),
                 PipeDirection.InOut,
                 NamedPipeServerStream.MaxAllowedServerInstances,
                 PipeTransmissionMode.Byte,
                 PipeOptions.Asynchronous
             );
 
-            await server.WaitForConnectionAsync();
+            await server.WaitForConnectionAsync(stoppingToken);
 
             var rpc = JsonRpc.Attach(server, new DirstributeServer());
 
-            _ = Task.Run(async () =>
-            {
-                await rpc.Completion;
-            });
+            _ = Task.Run(async () => { await rpc.Completion; }, stoppingToken);
         }
-    }
-
-    private async Task HandleClientAsync(NamedPipeServerStream server, CancellationToken token)
-    {
-        
     }
 }
