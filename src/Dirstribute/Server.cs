@@ -1,4 +1,5 @@
 using System.IO.Pipes;
+using Dirstribute.Helpers;
 using StreamJsonRpc;
 
 namespace Dirstribute;
@@ -6,10 +7,14 @@ namespace Dirstribute;
 public class NamedPipeServer : BackgroundService
 {
     private readonly ILogger _logger;
-    
-    public NamedPipeServer(ILogger<NamedPipeServer> logger)
+    private readonly ConfigurationService _configurationService;
+    private readonly DirstributeServer _server;
+
+    public NamedPipeServer(ILogger<NamedPipeServer> logger, ConfigurationService configurationService, DirstributeServer server)
     {
         _logger = logger;
+        _configurationService = configurationService;
+        _server = server;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -17,7 +22,7 @@ public class NamedPipeServer : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await using var server = new NamedPipeServerStream(
-                nameof(DirstributeServer),
+                nameof(MainWorker),
                 PipeDirection.InOut,
                 NamedPipeServerStream.MaxAllowedServerInstances,
                 PipeTransmissionMode.Byte,
@@ -26,9 +31,9 @@ public class NamedPipeServer : BackgroundService
 
             await server.WaitForConnectionAsync(stoppingToken);
 
-            var rpc = JsonRpc.Attach(server, new DirstributeServer());
-
-            _ = Task.Run(async () => { await rpc.Completion; }, stoppingToken);
+            var rpc = JsonRpc.Attach(server, _server);
+            
+            await rpc.Completion;
         }
     }
 }

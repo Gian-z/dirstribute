@@ -14,5 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DirstributeContracts\DirstributeContracts.csproj" />
+    <ProjectReference Include="..\DirstributeDomain\DirstributeDomain.csproj" />
   </ItemGroup>
 </Project>
